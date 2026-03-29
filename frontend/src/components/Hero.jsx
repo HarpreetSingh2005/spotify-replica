@@ -3,10 +3,14 @@ import video1 from "../assets/headphone-1.mp4";
 import video2 from "../assets/headphone-2.mp4";
 import video3 from "../assets/headphone-3.mp4";
 import video4 from "../assets/headphone-4.mp4";
-
 import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
 import "./Hero.css";
+
+gsap.registerPlugin(SplitText);
+
 const videos = [video1, video2, video3, video4];
+
 const Hero = () => {
   const [introDone, setIntroDone] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -115,7 +119,6 @@ const Hero = () => {
       >
         <source src={videos[activeIndex]} type="video/mp4" />
       </video>
-
       {/* Next Video (preloading hidden layer) */}
       <video
         ref={nextVideoRef}
@@ -130,7 +133,6 @@ const Hero = () => {
       >
         <source src={videos[nextIndex]} type="video/mp4" />
       </video>
-
       {/* Intro Mask Overlay */}
       {!introDone && (
         <div className="intro-overlay" ref={overlayRef}>
@@ -165,12 +167,47 @@ const Hero = () => {
           </svg>
         </div>
       )}
+      {/* Main Homepage Content */}
+      {/* Visual Overlays */}
+      <div className={`hero-overlay ${introDone ? "active" : ""}`}></div>
+      <div className={`hero-radial ${introDone ? "active" : ""}`}></div>
+      <div
+        className={`hero-bottom-gradient ${introDone ? "active" : ""}`}
+      ></div>
+      {/* Navbar */}
+      <nav className={`hero-navbar ${introDone ? "show" : ""}`}>
+        <div className="nav-logo">MUSIC</div>
 
+        <div className="nav-links">
+          <a href="#explore">Explore</a>
+          <a href="#genres">Genres</a>
+          <a href="#about">About</a>
+          <button className="sound-btn">Sound On</button>
+        </div>
+      </nav>
       {/* Main Homepage Content */}
       <div className={`home-content ${introDone ? "show" : ""}`}>
-        <h1>Spotify Replica</h1>
-        <p>Your music world starts here.</p>
+        <h1 className="hero-title">
+          Not just music.
+          <br />A feeling that moves with you.
+        </h1>
+
+        <p className="hero-subtitle">
+          A curated space for sound, emotion, and motion.
+        </p>
+
+        <div className="hero-actions">
+          <button className="hero-cta">
+            <span className="cta-text cta-default">Explore Collection</span>
+            <span className="cta-text cta-hover">Enter Soundscape</span>
+          </button>{" "}
+        </div>
       </div>
+      {/* Scroll Indicator */}
+      <div className={`hero-scroll ${introDone ? "show" : ""}`}>
+        <span>Scroll to explore</span>
+        <div className="scroll-line"></div>
+      </div>{" "}
     </div>
   );
 };
