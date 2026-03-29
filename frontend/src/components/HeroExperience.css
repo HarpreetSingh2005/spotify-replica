@@ -1,0 +1,612 @@
+* {
+  box-sizing: border-box;
+}
+
+.experience-wrapper {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(
+    to bottom,
+    #c5ad7884 0%,
+    #765a5a 18%,
+    /* #48cc793a 42%, */ #68ac57cb 68%,
+    #05060b 100%
+  );
+  overflow: hidden;
+  color: white;
+}
+
+/* =========================
+   AMBIENT BACKGROUND
+========================= */
+.exp-bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.24;
+  pointer-events: none;
+  z-index: 0;
+}
+/* 
+.glow-1 {
+  width: 420px;
+  height: 420px;
+  background: rgba(0, 255, 225, 0.24);
+  top: 8%;
+  left: -8%;
+  animation: floatGlow 14s ease-in-out infinite;
+}
+
+.glow-2 {
+  width: 500px;
+  height: 500px;
+  background: rgba(53, 134, 159, 0.914);
+  top: 36%;
+  right: -10%;
+  animation: floatGlow 18s ease-in-out infinite alternate;
+} */
+
+@keyframes floatGlow {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-30px) translateX(20px);
+  }
+  100% {
+    transform: translateY(20px) translateX(-20px);
+  }
+}
+
+.exp-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.55) 0.5px,
+    transparent 0.5px
+  );
+  background-size: 4px 4px;
+}
+
+/* =========================
+   SHARED
+========================= */
+.exp-transition,
+.exp-intro,
+.exp-features,
+.exp-big-statement,
+.genres-intro {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.exp-transition,
+.exp-intro,
+.exp-big-statement,
+.genres-intro {
+  padding: 4rem 5rem;
+}
+
+.exp-transition {
+  margin-top: 14rem;
+}
+.exp-transition-line {
+  font-family: "Inter", sans-serif;
+  font-size: 1.3rem;
+  display: flex;
+  justify-content: center;
+  letter-spacing: 0.6em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+/* =========================
+   INTRO
+========================= */
+.exp-intro {
+  min-height: 65vh;
+  display: flex;
+  align-items: center;
+}
+
+.exp-intro-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  font-family: "Playfair Display", serif;
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  width: 100%;
+  margin-bottom: 15rem;
+  /* max-width: 950px; */
+}
+
+.exp-intro-title span {
+  display: block;
+  font-size: 7rem;
+  /* font-size: clamp(2.8rem, 6vw, 5.8rem); */
+  color: rgba(255, 255, 255, 0.95);
+}
+.exp-intro-title span:nth-child(2) {
+  display: block;
+  /* font-size: clamp(2.8rem, 6vw, 5.8rem); */
+  font-size: 6.5rem;
+  padding: 1rem;
+  align-items: center;
+  color: rgb(0, 0, 0);
+  background-color: whitesmoke;
+}
+/* =========================
+   FEATURES
+========================= */
+.exp-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 0 5rem 4rem;
+}
+
+.exp-feature-block {
+  width: 100%;
+  min-height: auto;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.exp-feature-content {
+  /* max-width: 760px; */
+}
+
+.exp-feature-index {
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 0.7rem;
+}
+.exp-feature-content h3 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2rem, 3.6vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.7rem;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.exp-feature-content p:last-child {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 580px;
+}
+.exp-feature-content h3:nth-child(2) {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2rem, 3.6vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  display: flex;
+  justify-content: end;
+  margin-bottom: 0.7rem;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.exp-feature-content p:last-child {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 580px;
+}
+
+/* =========================
+   BIG STATEMENT
+========================= */
+.exp-big-statement {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.exp-big-line {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2.5rem, 5.5vw, 5.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+  max-width: 1000px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* =========================
+   HORIZONTAL MUSIC
+========================= */
+.music-horizontal-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(255, 255, 255, 0) 15%,
+    rgba(255, 255, 255, 0) 42%,
+    rgba(253, 253, 253, 0) 60%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+.music-horizontal-section {
+  position: relative;
+  /* width: 100%; */
+  height: 100vh;
+  overflow: hidden;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  background: linear-gradient(
+    90deg,
+    rgba(255, 91, 91, 0.649),
+    rgba(0, 255, 89, 0.483),
+    rgba(242, 255, 0, 0.613)
+  );
+}
+
+.music-horizontal-track {
+  display: flex;
+  align-items: center;
+  gap: 10rem;
+  width: max-content;
+  /* padding: 0 10; */
+  padding-left: 20vw;
+  padding-right: 20vw;
+  will-change: transform;
+}
+.music-letter-panel {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.music-letter-panel h2 {
+  font-family: "Anton", sans-serif;
+  font-size: 80rem;
+  /* font-size: clamp(7rem, 18vw, 50rem); */
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.94);
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+}
+
+/* =========================
+   GENRES PLAYGROUND
+========================= */
+.genres-playground {
+  position: relative;
+  min-height: 100vh;
+  padding: 7rem 5rem 3rem;
+  overflow: hidden;
+  transition: background-color 0.6s ease;
+  background-color: #0f1015;
+}
+
+.genres-bg-shift {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition:
+    background 0.6s ease,
+    opacity 0.6s ease;
+  opacity: 1;
+}
+
+.genres-header {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 4rem;
+}
+
+.genres-kicker {
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 1rem;
+}
+
+.genres-header h2 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+  max-width: 850px;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+/* one-screen layout */
+.genres-grid-screen {
+  /* position: relative; */
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  /* gap: 2rem 2.5rem; */
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-items: start; */
+  width: 100vw;
+  min-height: 58vh;
+}
+
+/* genre item */
+.genre-word {
+  position: relative;
+  width: 70%;
+  min-height: 180px;
+  /* padding: 2rem 1.6rem; */
+
+  border-radius: 999px;
+  cursor: pointer;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.genre-word-content {
+  position: relative;
+  z-index: 2;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  will-change: transform;
+}
+/* bubble appears around text */
+.genre-bubble-shape {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.75);
+  opacity: 0;
+  background: rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.14);
+  transition:
+    opacity 0.22s ease,
+    background 0.28s ease,
+    border-color 0.28s ease,
+    box-shadow 0.28s ease;
+  will-change: transform;
+  z-index: 0;
+}
+
+.genre-word:hover .genre-bubble-shape {
+  opacity: 1;
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.22);
+}
+
+.genre-title-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 0.6rem 1.2rem;
+  margin-left: -1.2rem;
+  margin-bottom: 0.5rem;
+  will-change: transform;
+}
+
+.genre-title-wrap h3 {
+  position: relative;
+  z-index: 2;
+}
+.genre-word h3,
+.genre-word p,
+.genre-word-index {
+  transition: color 0.28s ease;
+}
+
+.genre-word-index {
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.34);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.genre-word h3 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  color: rgba(255, 255, 255, 0.96);
+  margin-bottom: 0.45rem;
+}
+
+.genre-word p {
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.66);
+  max-width: 240px;
+}
+
+/* bubble colors */
+.genre-chill .genre-bubble-shape {
+  background: rgba(0, 207, 255, 0.08);
+  border-color: rgba(0, 207, 255, 0.16);
+}
+
+.genre-hiphop .genre-bubble-shape {
+  background: rgba(255, 80, 80, 0.08);
+  border-color: rgba(255, 80, 80, 0.16);
+}
+
+.genre-classical .genre-bubble-shape {
+  background: rgba(255, 220, 120, 0.08);
+  border-color: rgba(255, 220, 120, 0.16);
+}
+
+.genre-edm .genre-bubble-shape {
+  background: rgba(111, 91, 255, 0.1);
+  border-color: rgba(111, 91, 255, 0.18);
+}
+
+.genre-lofi .genre-bubble-shape {
+  background: rgba(180, 120, 255, 0.08);
+  border-color: rgba(180, 120, 255, 0.16);
+}
+
+.genre-indie .genre-bubble-shape {
+  background: rgba(120, 200, 130, 0.08);
+  border-color: rgba(120, 200, 130, 0.16);
+}
+
+/* whole background changes */
+.genres-playground.genre-chill {
+  background-color: #0a2730;
+}
+
+.genres-playground.genre-hiphop {
+  background-color: #2a1416;
+}
+
+.genres-playground.genre-classical {
+  background-color: #2d2418;
+}
+
+.genres-playground.genre-edm {
+  background-color: #18172f;
+}
+
+.genres-playground.genre-lofi {
+  background-color: #241b33;
+}
+
+.genres-playground.genre-indie {
+  background-color: #1b261d;
+}
+
+@media (max-width: 1024px) {
+  .genres-playground {
+    padding: 4rem 2rem 5rem;
+  }
+
+  .genres-grid-screen {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .genre-word {
+    min-height: 160px;
+    padding: 1.6rem 1.3rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .genres-grid-screen {
+    grid-template-columns: 1fr;
+  }
+
+  .genre-word h3 {
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .genre-word {
+    min-height: 150px;
+  }
+}
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 1024px) {
+  .exp-transition,
+  .exp-intro,
+  .exp-big-statement,
+  .genres-intro {
+    padding: 4rem 2rem;
+  }
+
+  .exp-features {
+    padding: 0 2rem 5rem;
+    gap: 2.5rem;
+  }
+
+  .exp-feature-block,
+  .exp-feature-block.reverse {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    min-height: auto;
+  }
+
+  .exp-feature-block.reverse .exp-feature-content,
+  .exp-feature-block.reverse .exp-feature-visual {
+    order: initial;
+  }
+
+  .exp-feature-visual {
+    height: 280px;
+  }
+
+  .music-horizontal-section {
+    height: 50vh;
+  }
+
+  .music-horizontal-track {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .exp-intro-title span {
+    font-size: clamp(2.3rem, 11vw, 3.8rem);
+  }
+
+  .exp-feature-content h3 {
+    font-size: clamp(1.9rem, 10vw, 2.8rem);
+  }
+
+  .exp-big-line {
+    font-size: clamp(2rem, 10vw, 3.4rem);
+  }
+  .genres-intro {
+    padding: 5rem 2rem 6rem;
+  }
+
+  .genres-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .genre-card {
+    min-height: 280px;
+  }
+
+  .music-letter-panel h2 {
+    font-size: clamp(5rem, 20vw, 8rem);
+  }
+
+  .music-letter-panel::before {
+    width: 160px;
+    height: 160px;
+  }
+}
