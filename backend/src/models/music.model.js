@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
 const musicSchema = new mongoose.Schema({
-  uri: {
+  imageUri: {
+    type: String,
+    required: true,
+  },
+  musicUri: {
     type: String,
     required: true,
   },

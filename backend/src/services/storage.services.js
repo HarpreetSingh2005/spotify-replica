@@ -4,10 +4,10 @@ const ImageKitClient = new ImageKit({
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
 });
 
-async function uploadFile(file) {
+async function uploadMusicFile(audioFile) {
   try {
     const result = await ImageKitClient.files.upload({
-      file: file,
+      file: audioFile,
       fileName: "music_" + Date.now(),
       folder: "spotify-replica/music",
     });
@@ -16,7 +16,20 @@ async function uploadFile(file) {
     console.log(err);
   }
 }
+function uploadImageFile(imageFile) {
+  try {
+    const result = ImageKitClient.files.upload({
+      file: imageFile,
+      fileName: "image_" + Date.now(),
+      folder: "spotify-replica/image",
+    });
+    return result;
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 module.exports = {
-  uploadFile,
+  uploadImageFile,
+  uploadMusicFile,
 };

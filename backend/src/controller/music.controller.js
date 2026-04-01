@@ -1,16 +1,26 @@
-const musicModel = require("../../../src/models/music.model");
-const albumModel = require("../../../src/models/album.model");
+const musicModel = require("../models/music.model");
+const albumModel = require("../models/album.model");
 const jwt = require("jsonwebtoken");
-const { uploadFile } = require("../../../src/services/storage.services");
+const {
+  uploadMusicFile,
+  uploadImageFile,
+} = require("../services/storage.services");
 
 async function create(req, res) {
   const title = req.body.title;
-  const file = req.file;
+  const audioFile = req.files.audio?.[0];
+  const imageFile = req.files.image?.[0];
 
-  const result = await uploadFile(file.buffer.toString("base64"));
+  const resultMusic = await uploadMusicFile(
+    audioFile.buffer.toString("base64"),
+  );
+  const resultImage = await uploadImageFile(
+    imageFile.buffer.toString("base64"),
+  );
 
   const music = await musicModel.create({
-    uri: result.url,
+    imageUri: resultImage.url,
+    musicUri: resultMusic.url,
     title,
     artist: req.user.id,
   });
@@ -18,7 +28,8 @@ async function create(req, res) {
     message: "Music created successfully",
     music: {
       id: music._id,
-      uri: music.uri,
+      imageUri: music.imageUri,
+      musicUri: music.musicUri,
       title: music.title,
       artist: music.artist,
     },
@@ -42,6 +53,12 @@ async function createAlbum(req, res) {
       artist: album.artist,
     },
   });
+}
+
+async function getMusic(req, res) {
+  const musicId = req.params.musicId;
+  const music = await musicModel.findById(musicId);
+  res.status(200).json({ message: "Music fetched successfully", music: music });
 }
 
 async function getAllMusics(req, res) {
@@ -78,6 +95,7 @@ async function getAlbumById(req, res) {
 module.exports = {
   create,
   createAlbum,
+  getMusic,
   getAllMusics,
   getAllAlbum,
   getAlbumById,
