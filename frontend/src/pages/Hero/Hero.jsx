@@ -1,23 +1,24 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { SplitText } from "gsap/SplitText";
-import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
 import "./HeroExperience.css";
 import "./Hero.css";
-import video1 from "../assets/headphone-1.mp4";
-import video2 from "../assets/headphone-2.mp4";
-import video3 from "../assets/headphone-3.mp4";
-import video4 from "../assets/headphone-4.mp4";
-import chillPreview from "../assets/genres/chill.mp3";
-import hiphopPreview from "../assets/genres/hiphop.mp3";
-import classicalPreview from "../assets/genres/classical.mp3";
-import edmPreview from "../assets/genres/edm.mp3";
-import lofiPreview from "../assets/genres/lofi.mp3";
-import indiePreview from "../assets/genres/indie.mp3";
 
-gsap.registerPlugin(SplitText);
+import video1 from "../../assets/headphone-1.mp4";
+import video2 from "../../assets/headphone-2.mp4";
+import video3 from "../../assets/headphone-3.mp4";
+import video4 from "../../assets/headphone-4.mp4";
+
+import chillPreview from "../../assets/genres/chill.mp3";
+import hiphopPreview from "../../assets/genres/hiphop.mp3";
+import classicalPreview from "../../assets/genres/classical.mp3";
+import edmPreview from "../../assets/genres/edm.mp3";
+import lofiPreview from "../../assets/genres/lofi.mp3";
+import indiePreview from "../../assets/genres/indie.mp3";
+import { Link } from "react-router-dom";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const videos = [video1, video2, video3, video4];
@@ -75,36 +76,33 @@ const genres = [
     desc: "Raw, textured, personal.",
   },
 ];
+
 const Hero = () => {
   const [introDone, setIntroDone] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [nextIndex, setNextIndex] = useState(1);
   const [showNext, setShowNext] = useState(false);
   const [nextReady, setNextReady] = useState(false);
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
 
-  // Overlay
   const overlayRef = useRef(null);
   const svgRef = useRef(null);
   const textRef = useRef(null);
-  // Video
   const activeVideoRef = useRef(null);
   const nextVideoRef = useRef(null);
-  //
   const sectionRef = useRef(null);
   const horizontalRef = useRef(null);
   const horizontalTrackRef = useRef(null);
   const featureRefs = useRef([]);
-
-  //Genres music
   const [activeGenre, setActiveGenre] = useState(null);
   const genreAudioRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
   const genreRefs = useRef([]);
+  const bgMusicRef = useRef(null);
 
-  //Masking effect
+  // Intro Mask
   useEffect(() => {
     document.body.style.overflow = "hidden";
-
     const tl = gsap.timeline({
       onComplete: () => {
         setIntroDone(true);
@@ -114,11 +112,7 @@ const Hero = () => {
 
     tl.fromTo(
       textRef.current,
-      {
-        opacity: 0,
-        // scale: 0.8,
-        filter: "blur(10px)",
-      },
+      { opacity: 0, filter: "blur(10px)" },
       {
         opacity: 1,
         scale: 1,
@@ -141,82 +135,71 @@ const Hero = () => {
         ease: "power4.inOut",
         transformOrigin: "center center",
       })
-      .to(overlayRef.current, {
-        display: "none",
-        pointerEvents: "none",
-      });
+      .to(overlayRef.current, { display: "none", pointerEvents: "none" });
 
     return () => {
       document.body.style.overflow = "auto";
     };
   }, []);
-
-  //Video switch
+  // Video switching logic (clean)
   useEffect(() => {
     const interval = setInterval(() => {
       if (!nextReady) return;
-
       setShowNext(true);
-
       setTimeout(() => {
         setActiveIndex(nextIndex);
-        setNextIndex((nextIndex + 1) % videos.length);
+        setNextIndex((prev) => (prev + 1) % videos.length);
         setShowNext(false);
         setNextReady(false);
-      }, 1000); // match fade duration
+      }, 950);
     }, 5000);
-
     return () => clearInterval(interval);
   }, [nextReady, nextIndex]);
 
-  // Try autoplay after source changes
   useEffect(() => {
     if (activeVideoRef.current) {
-      activeVideoRef.current.play().catch(() => {});
+      activeVideoRef.current.src = videos[activeIndex];
+      activeVideoRef.current.load();
     }
     if (nextVideoRef.current) {
+      nextVideoRef.current.src = videos[nextIndex];
       nextVideoRef.current.load();
     }
   }, [activeIndex, nextIndex]);
 
-  // The horizontal scroll and rest of stuff
+  // Restart active video from beginning
+  useEffect(() => {
+    const vid = activeVideoRef.current;
+    if (vid) {
+      vid.currentTime = 0;
+      vid.play().catch(() => {});
+    }
+  }, [activeIndex]);
+
+  // GSAP Scroll Animations
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Intro reveal
       gsap.from(".exp-transition-line", {
         opacity: 0,
         y: 40,
         duration: 1.2,
         ease: "power3.out",
-        scrollTrigger: {
-          trigger: ".exp-transition-line",
-          start: "top 85%",
-        },
+        scrollTrigger: { trigger: ".exp-transition-line", start: "top 85%" },
       });
-
       gsap.from(".exp-intro-title span", {
         opacity: 0,
         y: 100,
         stagger: 0.12,
         duration: 1.3,
         ease: "power4.out",
-        scrollTrigger: {
-          trigger: ".exp-intro",
-          start: "top 75%",
-        },
+        scrollTrigger: { trigger: ".exp-intro", start: "top 75%" },
       });
 
-      // Feature blocks reveal
       featureRefs.current.forEach((el) => {
         if (!el) return;
-
         gsap.fromTo(
           el,
-          {
-            opacity: 0.25,
-            y: 80,
-            scale: 0.96,
-          },
+          { opacity: 0.25, y: 80, scale: 0.96 },
           {
             opacity: 1,
             y: 0,
@@ -232,32 +215,26 @@ const Hero = () => {
         );
       });
 
-      // Big statement reveal
       gsap.from(".exp-big-line", {
         opacity: 0,
         y: 80,
         duration: 1.3,
         ease: "power4.out",
-        scrollTrigger: {
-          trigger: ".exp-big-statement",
-          start: "top 75%",
-        },
+        scrollTrigger: { trigger: ".exp-big-statement", start: "top 75%" },
       });
 
-      // Horizontal MUSIC scroll
+      // Horizontal Scroll
       const track = horizontalTrackRef.current;
-      const horizontalSection = horizontalRef.current;
-
-      if (track && horizontalSection) {
+      const section = horizontalRef.current;
+      if (track && section) {
         const scrollAmount = Math.max(track.scrollWidth - window.innerWidth, 0);
-
         gsap.to(track, {
           x: -scrollAmount,
           ease: "power1.out",
           scrollTrigger: {
-            trigger: horizontalSection,
+            trigger: section,
             start: "top top",
-            end: () => `+=${scrollAmount * 0.5}`,
+            end: () => `+=${scrollAmount * 0.45}`,
             scrub: 0.8,
             pin: true,
             anticipatePin: 1,
@@ -265,53 +242,51 @@ const Hero = () => {
           },
         });
       }
-
-      // Genres intro reveal
-      gsap.from(".genre-word", {
-        opacity: 0,
-        y: 60,
-        stagger: 0.12,
-        duration: 1,
-        ease: "power4.out",
-        scrollTrigger: {
-          trigger: ".genres-playground",
-          start: "top 80%",
-        },
-      });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  //Genre Music
+  // Start Background Music when user taps
+  const unlockAudio = () => {
+    setAudioUnlocked(true);
+    console.log("Audio Unlocked");
+    // Start ambient background music (replace with your own soft track)
+    if (!bgMusicRef.current) {
+      const bgMusic = new Audio(chillPreview); // ← Put your ambient track here
+      bgMusic.volume = 0.25;
+      bgMusic.loop = true;
+      bgMusic.play().catch(() => {});
+      bgMusicRef.current = bgMusic;
+    }
+
+    // Hide tap overlay smoothly
+    const tapOverlay = document.querySelector(".tap-to-unlock");
+    if (tapOverlay) tapOverlay.classList.add("hidden");
+  };
+  // Genre Handlers (Improved Magnetic Bubble)
   const handleGenreEnter = (genre) => {
+    if (!audioUnlocked) return;
     setActiveGenre(genre.className);
 
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
 
     hoverTimeoutRef.current = setTimeout(() => {
       if (genreAudioRef.current) {
         genreAudioRef.current.pause();
         genreAudioRef.current.currentTime = 0;
       }
-
       const audio = new Audio(genre.preview);
       audio.volume = 0.35;
       audio.loop = true;
       audio.play().catch(() => {});
       genreAudioRef.current = audio;
-    }, 280); // <-- delay here
+    }, 280);
   };
 
   const handleGenreLeave = () => {
     setActiveGenre(null);
-
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
-
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     if (genreAudioRef.current) {
       genreAudioRef.current.pause();
       genreAudioRef.current.currentTime = 0;
@@ -321,7 +296,6 @@ const Hero = () => {
   const handleGenreMove = (e, index) => {
     const item = genreRefs.current[index];
     if (!item) return;
-
     const bubble = item.querySelector(".genre-bubble-shape");
     const titleWrap = item.querySelector(".genre-title-wrap");
     if (!bubble || !titleWrap) return;
@@ -329,86 +303,64 @@ const Hero = () => {
     const rect = titleWrap.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
+    const dx = e.clientX - centerX;
+    const dy = e.clientY - centerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
-    const distanceX = e.clientX - centerX;
-    const distanceY = e.clientY - centerY;
-
-    // 👉 VERY SMALL movement (strong stick)
-    const moveX = Math.max(Math.min(distanceX * 0.06, 12), -12);
-    const moveY = Math.max(Math.min(distanceY * 0.06, 10), -10);
-
-    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-
-    // 👉 THIS IS THE IMPORTANT PART (strong stretch)
-    const stretchFactor = Math.min(distance / 120, 0.45);
+    const moveX = Math.max(Math.min(dx * 0.08, 18), -18);
+    const moveY = Math.max(Math.min(dy * 0.08, 14), -14);
+    const stretch = Math.min(distance / 90, 0.55);
 
     const scaleX =
-      1 +
-      (Math.abs(distanceX) / (Math.abs(distanceX) + Math.abs(distanceY) + 1)) *
-        stretchFactor;
-
+      1 + (Math.abs(dx) / (Math.abs(dx) + Math.abs(dy) + 1)) * stretch;
     const scaleY =
-      1 +
-      (Math.abs(distanceY) / (Math.abs(distanceX) + Math.abs(distanceY) + 1)) *
-        stretchFactor;
+      1 + (Math.abs(dy) / (Math.abs(dx) + Math.abs(dy) + 1)) * stretch;
 
     gsap.to(bubble, {
       x: moveX,
       y: moveY,
-      scaleX: scaleX,
-      scaleY: scaleY * 0.75,
-      duration: 0.18,
+      scaleX,
+      scaleY: scaleY * 0.72,
+      duration: 0.16,
       ease: "power3.out",
-      transformOrigin: "center center",
     });
-
     gsap.to(titleWrap, {
-      x: moveX * 0.08,
-      y: moveY * 0.08,
-      duration: 0.18,
+      x: moveX * 0.1,
+      y: moveY * 0.1,
+      duration: 0.16,
       ease: "power3.out",
     });
   };
+
   const handleGenreHover = (e, genre, index) => {
     const item = genreRefs.current[index];
     if (!item) return;
-
     const titleWrap = item.querySelector(".genre-title-wrap");
     if (!titleWrap) return;
 
     const rect = titleWrap.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy);
 
-    const distanceX = e.clientX - centerX;
-    const distanceY = e.clientY - centerY;
-    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-
-    // only activate if cursor is actually close enough
-    const activationRadius = 95;
-
-    if (distance < activationRadius) {
-      if (activeGenre !== genre.className) {
-        handleGenreEnter(genre);
-      }
-
+    if (dist < 95) {
+      if (activeGenre !== genre.className) handleGenreEnter(genre);
       handleGenreMove(e, index);
-    } else {
-      if (activeGenre === genre.className) {
-        handleGenreLeave();
-        resetGenreBubble(index);
-      }
+    } else if (activeGenre === genre.className) {
+      handleGenreLeave();
+      resetGenreBubble(index);
     }
   };
 
   const resetGenreBubble = (index) => {
     const item = genreRefs.current[index];
     if (!item) return;
-
     const bubble = item.querySelector(".genre-bubble-shape");
     const titleWrap = item.querySelector(".genre-title-wrap");
 
-    if (bubble) {
+    if (bubble)
       gsap.to(bubble, {
         x: 0,
         y: 0,
@@ -417,28 +369,17 @@ const Hero = () => {
         duration: 0.65,
         ease: "elastic.out(1, 0.35)",
       });
-    }
-
-    if (titleWrap) {
-      gsap.to(titleWrap, {
-        x: 0,
-        y: 0,
-        duration: 0.5,
-        ease: "power3.out",
-      });
-    }
+    if (titleWrap)
+      gsap.to(titleWrap, { x: 0, y: 0, duration: 0.5, ease: "power3.out" });
   };
 
   return (
     <>
       <section className="hero-wrapper">
-        {/* Video Layer */}
         <div className={`hero-media ${introDone ? "framed" : ""}`}>
-          {/* Current Video */}
           <video
             ref={activeVideoRef}
-            key={`active-${videos[activeIndex]}`}
-            className={`bg-video ${showNext ? "fade-out" : "active"}`}
+            className={`bg-video ${showNext ? "fade-out" : ""}`}
             autoPlay
             muted
             loop
@@ -448,10 +389,8 @@ const Hero = () => {
             <source src={videos[activeIndex]} type="video/mp4" />
           </video>
 
-          {/* Next Video */}
           <video
             ref={nextVideoRef}
-            key={`next-${videos[nextIndex]}`}
             className={`bg-video next-layer ${showNext ? "fade-in" : ""}`}
             autoPlay
             muted
@@ -463,15 +402,21 @@ const Hero = () => {
             <source src={videos[nextIndex]} type="video/mp4" />
           </video>
 
-          {/* Overlays */}
           <div className={`hero-overlay ${introDone ? "active" : ""}`}></div>
           <div className={`hero-radial ${introDone ? "active" : ""}`}></div>
           <div
             className={`hero-bottom-gradient ${introDone ? "active" : ""}`}
           ></div>
+
+          {/* Tap to Unlock */}
+          {!audioUnlocked && introDone && (
+            <div className="tap-to-unlock" onClick={unlockAudio}>
+              <p>Tap to unlock sound</p>
+              <span>Click anywhere to start the immersive experience</span>
+            </div>
+          )}
         </div>
 
-        {/* Intro Mask Overlay */}
         {!introDone && (
           <div className="intro-overlay" ref={overlayRef}>
             <svg
@@ -495,7 +440,6 @@ const Hero = () => {
                   </text>
                 </mask>
               </defs>
-
               <rect
                 width="100%"
                 height="100%"
@@ -506,21 +450,26 @@ const Hero = () => {
           </div>
         )}
 
-        {/* Navbar */}
         <nav className={`hero-navbar ${introDone ? "show" : ""}`}>
           <button className="nav-logo">
             <span>MUSIC</span>
           </button>
-
           <div className="nav-links">
             <a href="#explore">Explore</a>
             <a href="#genres">Genres</a>
             <a href="#about">About</a>
-            <button className="sound-btn">Sound On</button>
+            <a
+              href="/upload"
+              style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none" }}
+            >
+              Create Music
+            </a>
+            <button className="sound-btn" onClick={unlockAudio}>
+              Sound On
+            </button>
           </div>
         </nav>
 
-        {/* Main Content */}
         <div className={`home-content ${introDone ? "show" : ""}`}>
           <h1 className="hero-title">
             <span className="line-one">Not just music.</span>
@@ -528,13 +477,20 @@ const Hero = () => {
           </h1>
         </div>
 
-        {/* Bottom Frame / CTA Row */}
         <div className={`hero-frame ${introDone ? "show" : ""}`}>
-          <button className="hero-cta">
+          <Link
+            to="/explore"
+            className="hero-cta"
+            onClick={() => {
+              if (bgMusicRef.current) {
+                bgMusicRef.current?.pause();
+                bgMusicRef.current.currentTime = 0;
+              }
+            }}
+          >
             <span className="cta-text cta-default">Explore Collection</span>
             <span className="cta-text cta-hover">Enter Soundscape</span>
-          </button>
-
+          </Link>
           <div className="frame-meta">
             <span className="scroll-text">Scroll to Explore</span>
             <div className="scroll-line"></div>
@@ -543,25 +499,17 @@ const Hero = () => {
       </section>
 
       <section className="experience-wrapper" ref={sectionRef}>
-        {/* Ambient background */}
-        <div className="exp-bg-glow glow-1"></div>
-        <div className="exp-bg-glow glow-2"></div>
-        <div className="exp-noise"></div>
-
-        {/* Transition */}
-        <div className="exp-transition">
+        <div className="exp-transition" id="explore">
           <p className="exp-transition-line">Built to be more than playback.</p>
         </div>
 
-        {/* Intro */}
-        <div className="exp-intro">
+        <div className="exp-intro" id="explore">
           <h2 className="exp-intro-title">
             <span>This isn’t a playlist library</span>
             <span>It’s a space shaped by sound.</span>
           </h2>
         </div>
 
-        {/* Features */}
         <div className="exp-features">
           {features.map((item, index) => (
             <div
@@ -578,16 +526,13 @@ const Hero = () => {
           ))}
         </div>
 
-        {/* Big Statement */}
         <div className="exp-big-statement">
           <h2 className="exp-big-line">
-            Music should match your state —
-            <br />
+            Music should match your state —<br />
             not interrupt it.
           </h2>
         </div>
 
-        {/* Horizontal MUSIC Scroll */}
         <section className="music-horizontal-section" ref={horizontalRef}>
           <div className="music-horizontal-track" ref={horizontalTrackRef}>
             {["M", "U", "S", "I", "C"].map((letter, i) => (
@@ -598,10 +543,11 @@ const Hero = () => {
           </div>
         </section>
 
-        {/* Transition to Genres */}
-        <section className={`genres-playground ${activeGenre || ""}`}>
+        <section
+          className={`genres-playground ${activeGenre || ""}`}
+          id="genres"
+        >
           <div className="genres-bg-shift"></div>
-
           <div className="genres-header">
             <p className="genres-kicker">Pick what you want to feel.</p>
             <h2>Every genre moves differently.</h2>
@@ -616,7 +562,6 @@ const Hero = () => {
               >
                 <div className="genre-word-content">
                   <span className="genre-word-index">0{index + 1}</span>
-
                   <div
                     className="genre-title-wrap"
                     onMouseMove={(e) => handleGenreHover(e, genre, index)}

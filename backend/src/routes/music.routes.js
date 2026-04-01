@@ -21,7 +21,6 @@ router.post(
 /* Create album: /api/music/album */
 router.post("/album", authMiddleware.authArtist, musicController.createAlbum);
 
-
 /* Get album by id: /api/music/album/:albumId */
 router.get(
   "/album/:albumId",
@@ -33,7 +32,7 @@ router.get(
 router.get("/album", authMiddleware.authUser, musicController.getAllAlbum);
 
 /* Get all musics: /api/music */
-router.get("/", authMiddleware.authUser, musicController.getAllMusics);
+router.get("/", /*authMiddleware.authUser,*/ musicController.getAllMusics);
 
 /* Get music by id: /api/music/:musicId */
 router.get("/:musicId", authMiddleware.authUser, musicController.getMusic);

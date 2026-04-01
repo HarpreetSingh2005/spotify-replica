@@ -30,7 +30,14 @@ async function register(req, res) {
     process.env.JWT_SECRET,
   );
 
-  res.cookie("token", token);
+  //For Production and Local level
+  const isProduction = process.env.NODE_ENV === "production";
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
+
   res.status(201).json({
     message: "User created successfully",
     user: {
@@ -69,7 +76,13 @@ async function loginUser(req, res) {
     process.env.JWT_SECRET,
   );
 
-  res.cookie("token", token);
+  //For Production and Local level
+  const isProduction = process.env.NODE_ENV === "production";
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
   res.status(200).json({
     message: "User logged in successfully",
     user: {

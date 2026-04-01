@@ -7,9 +7,7 @@
   overflow: hidden;
 }
 
-/* =========================
-   HERO MEDIA
-========================= */
+/* HERO MEDIA */
 .hero-media {
   position: absolute;
   inset: 0;
@@ -17,12 +15,7 @@
   width: 100%;
   overflow: hidden;
   z-index: 0;
-  /* transition: height 0.8s cubic-bezier(0.22, 1, 0.36, 1); */
 }
-
-/* .hero-media.framed {
-  height: 75vh;
-} */
 
 .bg-video {
   position: absolute;
@@ -31,34 +24,28 @@
   height: 100%;
   object-fit: cover;
   opacity: 1;
-  transition: opacity 1s ease-in-out;
+  transition: opacity 1.1s cubic-bezier(0.23, 1, 0.32, 1);
   backface-visibility: hidden;
-  transform: translateZ(0);
   will-change: opacity;
 }
 
 .bg-video.fade-out {
   opacity: 0;
 }
-
 .bg-video.next-layer {
   opacity: 0;
 }
-
 .bg-video.next-layer.fade-in {
   opacity: 1;
 }
 
-/* =========================
-   OVERLAYS
-========================= */
+/* OVERLAYS */
 .hero-overlay,
 .hero-radial,
 .hero-bottom-gradient {
   opacity: 0;
   transition: opacity 1.6s ease;
 }
-
 .hero-overlay.active,
 .hero-radial.active,
 .hero-bottom-gradient.active {
@@ -72,7 +59,6 @@
   z-index: 1;
   pointer-events: none;
 }
-
 .hero-radial {
   position: absolute;
   inset: 0;
@@ -84,7 +70,6 @@
   z-index: 1;
   pointer-events: none;
 }
-
 .hero-bottom-gradient {
   position: absolute;
   inset: 0;
@@ -98,9 +83,41 @@
   pointer-events: none;
 }
 
-/* =========================
-   NAVBAR
-========================= */
+/* TAP TO UNLOCK - FIXED & IMPROVED */
+.tap-to-unlock {
+  position: absolute;
+  inset: 0;
+  z-index: 25; /* Between videos and content */
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1.2rem;
+  cursor: pointer;
+  transition: opacity 1s ease;
+  pointer-events: all;
+}
+
+.tap-to-unlock.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tap-to-unlock p {
+  font-family: "Inter", sans-serif;
+  font-size: 1.45rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.tap-to-unlock span {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+/* NAVBAR */
 .hero-navbar {
   position: absolute;
   top: 1.8rem;
@@ -113,10 +130,9 @@
   align-items: center;
   padding: 0.5rem 1rem;
   border-radius: 62.5rem;
-  /* background: rgba(0, 0, 0, 0.78); */
   box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.4);
   border: 0.0625rem solid rgba(255, 255, 255, 0.08);
-  z-index: 20;
+  z-index: 30;
   opacity: 0;
   transition: all 1s ease;
 }
@@ -162,21 +178,6 @@
   transform: scaleX(1);
 }
 
-.nav-logo:hover {
-  color: white;
-}
-
-.nav-logo::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -0.3rem;
-  width: 0%;
-  height: 0.0625rem;
-  background: rgba(255, 255, 255, 0.8);
-  transition: width 0.35s ease;
-}
-
 .nav-links {
   display: flex;
   gap: 2rem;
@@ -201,7 +202,7 @@
 }
 
 /* =========================
-   HERO CONTENT
+   HERO CONTENT + FRAME
 ========================= */
 .home-content {
   position: relative;
@@ -244,16 +245,15 @@
   line-height: 1.08;
   letter-spacing: -0.04em;
   color: rgba(224, 224, 224, 0.67);
-  max-width: none;
   white-space: nowrap;
 }
 
-/* =========================
-   HERO FRAME (BOTTOM CUT)
-========================= */
+.home-content {
+  z-index: 28;
+}
 .hero-frame {
   position: relative;
-  z-index: 10;
+  z-index: 29;
   height: 25vh;
   min-height: 10rem;
   background: linear-gradient(
@@ -280,7 +280,6 @@
   filter: blur(0);
 }
 
-/* CTA */
 .hero-cta,
 .frame-meta {
   opacity: 0;
@@ -294,6 +293,7 @@
   opacity: 1;
   transform: translateY(0);
 }
+
 .hero-cta {
   position: relative;
   overflow: hidden;
@@ -308,6 +308,10 @@
   transition: all 0.3s ease;
   height: 3.4rem;
   min-width: 13.5rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-cta:hover {
@@ -328,7 +332,6 @@
   transform: translate(-50%, -50%);
   opacity: 1;
 }
-
 .cta-hover {
   top: 130%;
   transform: translate(-50%, -50%) rotate(6deg);
@@ -347,7 +350,6 @@
   transform: translate(-50%, -50%) rotate(0deg);
 }
 
-/* right side meta */
 .frame-meta {
   display: flex;
   flex-direction: column;
@@ -390,7 +392,7 @@
   inset: 0;
   width: 100%;
   height: 100vh;
-  z-index: 9999;
+  /* z-index: 9999; */
 }
 
 .text-cutout {
@@ -417,23 +419,18 @@
     top: 1rem;
     padding: 0.8rem 1rem;
   }
-
   .nav-links {
     gap: 1rem;
   }
-
   .home-content {
     padding: 0 1.5rem;
   }
-
   .hero-frame {
     padding: 0 1.5rem;
   }
-
   .line-one {
     font-size: clamp(3rem, 11vw, 4.8rem);
   }
-
   .line-two {
     font-size: clamp(1.7rem, 6vw, 2.6rem);
     margin-left: 1.5rem;

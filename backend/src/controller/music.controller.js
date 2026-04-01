@@ -58,29 +58,33 @@ async function createAlbum(req, res) {
 async function getMusic(req, res) {
   const musicId = req.params.musicId;
   const music = await musicModel.findById(musicId);
-  res.status(200).json({ message: "Music fetched successfully", music: music });
+  res.status(200).json({ success: true, music: music });
 }
 
 async function getAllMusics(req, res) {
-  const musics = await musicModel
-    .find()
-    .limit(1)
-    .populate("artist", "username email");
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const musics = await musicModel.find().skip(skip).limit(limit);
+  // .populate("artist", "username email");
   //we limit to bring only 1 song, as it takes too much space if we bring all songs at once
-  res
-    .status(200)
-    .json({ nessage: "musics fetched successfully", musics: musics });
+  res.status(200).json({ success: true, musics: musics });
 }
 
 async function getAllAlbum(req, res) {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
   const albums = await albumModel
     .find()
+    .skip(skip)
+    .limit(limit)
     .select("title artist")
     .populate("artist", "username email");
   //dont want to get musics in response as it would take too much space
-  res
-    .status(200)
-    .json({ message: "Albums fetched successfully", albums: albums });
+  res.status(200).json({ success: true, albums: albums });
 }
 
 async function getAlbumById(req, res) {
@@ -89,7 +93,7 @@ async function getAlbumById(req, res) {
     .findById(albumId)
     .populate("artist", "username email")
     .populate("musics");
-  res.status(200).json({ message: "Album fetched successfully", album: album });
+  res.status(200).json({ success: true, album: album });
 }
 
 module.exports = {
