@@ -21,6 +21,7 @@ router.post(
 /* Create album: /api/music/album */
 router.post("/album", authMiddleware.authArtist, musicController.createAlbum);
 
+
 /* Get album by id: /api/music/album/:albumId */
 router.get(
   "/album/:albumId",
