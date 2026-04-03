@@ -49,6 +49,7 @@ async function create(req, res) {
 
 async function createAlbum(req, res) {
   try {
+    console.log(req.body);
     const { title, musics, description } = req.body;
     const imageFile = req.files?.image?.[0];
 
@@ -57,7 +58,7 @@ async function createAlbum(req, res) {
       parsedMusics = JSON.parse(musics);
     }
 
-    if (!title || !songs) {
+    if (!title || !musics) {
       return res.status(400).json({
         success: false,
         message: "Title and songs are required",
@@ -84,7 +85,7 @@ async function createAlbum(req, res) {
     const populatedAlbum = await albumModel
       .findById(album._id)
       .populate("artist", "username email")
-      .populate("songs");
+      .populate("musics");
 
     return res.status(201).json({
       success: true,
@@ -130,7 +131,6 @@ async function getAllAlbum(req, res) {
     .find()
     .skip(skip)
     .limit(limit)
-    .select("title artist")
     .populate("artist", "username email")
     .sort({ createdAt: -1 });
   //dont want to get musics in response as it would take too much space

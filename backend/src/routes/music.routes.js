@@ -20,7 +20,12 @@ router.post(
 );
 
 /* Create album: /api/music/album */
-router.post("/album", authMiddleware.authArtist, musicController.createAlbum);
+router.post(
+  "/album",
+  authMiddleware.authArtist,
+  upload.fields([{ name: "image", maxCount: 1 }]),
+  musicController.createAlbum,
+);
 
 /* Get album by id: /api/music/album/:albumId */
 router.get(
