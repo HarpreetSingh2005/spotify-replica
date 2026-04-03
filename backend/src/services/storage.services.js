@@ -16,9 +16,9 @@ async function uploadMusicFile(audioFile) {
     console.log(err);
   }
 }
-function uploadImageFile(imageFile) {
+async function uploadImageFile(imageFile) {
   try {
-    const result = ImageKitClient.files.upload({
+    const result = await ImageKitClient.files.upload({
       file: imageFile,
       fileName: "image_" + Date.now(),
       folder: "spotify-replica/image",

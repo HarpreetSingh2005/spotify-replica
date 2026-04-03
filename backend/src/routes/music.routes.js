@@ -18,18 +18,19 @@ router.post(
   ]),
   musicController.create,
 );
+
 /* Create album: /api/music/album */
 router.post("/album", authMiddleware.authArtist, musicController.createAlbum);
 
 /* Get album by id: /api/music/album/:albumId */
 router.get(
   "/album/:albumId",
-  authMiddleware.authUser,
+  // authMiddleware.authUser,
   musicController.getAlbumById,
 );
 
 /* Get all albums: /api/music/album */
-router.get("/album", authMiddleware.authUser, musicController.getAllAlbum);
+router.get("/album", /*authMiddleware.authUser ,*/ musicController.getAllAlbum);
 
 /* Get all musics: /api/music */
 router.get("/", /*authMiddleware.authUser,*/ musicController.getAllMusics);
