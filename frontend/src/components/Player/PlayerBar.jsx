@@ -12,7 +12,7 @@ const PlayerBar = () => {
     playNext,
     playPrev,
     seek,
-    setVolume,
+    changeVolume,
   } = usePlayer();
 
   // format seconds → mm:ss
@@ -76,7 +76,7 @@ const PlayerBar = () => {
           max="1"
           step="0.01"
           value={volume}
-          onChange={(e) => setVolume(Number(e.target.value))}
+          onChange={(e) => changeVolume(Number(e.target.value))}
           className="volume-slider"
         />
       </div>

@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import React from "react";
 import Hero from "../pages/Hero/Hero";
 import Explore from "../pages/Explore/Explore";
+import AlbumPage from "../pages/Album/AlbumPage";
 import AppLayout from "../components/Layout/AppLayout";
 
 const AppRoutes = () => {
@@ -14,6 +14,14 @@ const AppRoutes = () => {
         element={
           <AppLayout>
             <Explore />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/album/:albumId"
+        element={
+          <AppLayout>
+            <AlbumPage />
           </AppLayout>
         }
       />

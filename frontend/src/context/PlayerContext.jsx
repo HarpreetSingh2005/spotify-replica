@@ -66,17 +66,18 @@ export const PlayerProvider = ({ children }) => {
 
   //Volume
   const changeVolume = (value) => {
-    const vol = Number(value);
+    const vol = value;
     audioRef.current.volume = vol;
     setVolume(vol);
   };
+
   // Sync time
   useEffect(() => {
     const audio = audioRef.current;
 
     const updateTime = () => {
       setCurrentTime(audio.currentTime);
-    };
+    }; //Whenever audio time changes, update react state too.
 
     const setMeta = () => {
       setDuration(audio.duration);
@@ -88,27 +89,28 @@ export const PlayerProvider = ({ children }) => {
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", setMeta);
+      //Cleanup is important or else, every second the react updates, it shows event...
     };
   }, []);
-};
+  return (
+    <PlayerContext.Provider
+      value={{
+        currentSong,
+        isPlaying,
+        currentTime,
+        duration,
+        volume,
+        queue,
 
-return (
-  <PlayerContext.Provider
-    value={{
-      currentSong,
-      isPlaying,
-      currentTime,
-      duration,
-      volume,
-      queue,
-      playSong,
-      togglePlay,
-      playNext,
-      playPrev,
-      seek,
-      changeVolume,
-    }}
-  >
-    {children}
-  </PlayerContext.Provider>
-);
+        playSong,
+        togglePlay,
+        playNext,
+        playPrev,
+        seek,
+        changeVolume,
+      }}
+    >
+      {children}
+    </PlayerContext.Provider>
+  );
+};

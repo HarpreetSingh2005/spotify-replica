@@ -1,0 +1,86 @@
+.explore-page {
+  position: relative;
+  min-height: 100vh;
+  padding: 120px 40px 130px;
+  background: #0b0b0f;
+  color: white;
+  overflow: hidden;
+}
+
+.explore-bg-dynamic {
+  position: absolute;
+  inset: 0; /*Shorthand for top, right, bottom, left = 0*/
+  background-size: cover;
+  background-position: center;
+  /* filter: blur(100px) saturate(140%); */
+  transform: scale(1.5);
+  opacity: 0.5;
+  transition:
+    background-image 0.8s ease,
+    opacity 0.6s ease;
+  z-index: 0;
+}
+
+.explore-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(8, 8, 12, 0.75),
+    rgba(8, 8, 12, 0.9),
+    rgba(8, 8, 12, 1)
+  );
+  z-index: 1;
+}
+
+.explore-content {
+  position: relative;
+  z-index: 2;
+}
+
+.explore-header {
+  margin-bottom: 42px;
+}
+
+.explore-kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 12px;
+}
+
+.explore-header h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  margin: 0 0 12px;
+  font-family: "Playfair Display", serif;
+}
+
+.explore-subtext {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.68);
+  max-width: 620px;
+  line-height: 1.7;
+}
+
+.songs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 28px;
+}
+
+.explore-section-title {
+  font-size: 1.4rem;
+  margin-bottom: 24px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.explore-message {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 20px;
+}
+
+.explore-message.error {
+  color: #ff6b6b;
+}
