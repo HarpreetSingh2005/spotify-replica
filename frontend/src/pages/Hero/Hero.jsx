@@ -490,12 +490,6 @@ const Hero = () => {
             {/* <a href="#explore">Explore</a> */}
             <a href="#genres">Genres</a>
             <a href="#about">About</a>
-            <a
-              href="/upload"
-              style={{ color: "rgba(255,255,255,0.8)", textDecoration: "none" }}
-            >
-              Create Music
-            </a>
             <button className={`sound-btn ${isSoundOn && audioUnlocked ? "sound-active" : ""}`} onClick={toggleGlobalSound}>
               {isSoundOn && audioUnlocked ? "Sound On" : "Sound Off"}
             </button>
