@@ -8,7 +8,10 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("spotify_user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const openAuthModal = () => setIsAuthModalOpen(true);
@@ -19,6 +22,7 @@ export const AuthProvider = ({ children }) => {
       const data = await loginService(loginId, password);
       if (data && data.user) {
         setUser(data.user);
+        localStorage.setItem("spotify_user", JSON.stringify(data.user));
         closeAuthModal();
       }
       return data;
@@ -33,6 +37,7 @@ export const AuthProvider = ({ children }) => {
       const data = await registerService(username, email, password);
       if (data && data.user) {
         setUser(data.user);
+        localStorage.setItem("spotify_user", JSON.stringify(data.user));
         closeAuthModal();
       }
       return data;
@@ -46,6 +51,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await logoutService();
       setUser(null);
+      localStorage.removeItem("spotify_user");
     } catch (error) {
       console.error("Logout failed", error);
     }
