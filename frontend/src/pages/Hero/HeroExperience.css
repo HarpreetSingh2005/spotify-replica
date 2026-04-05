@@ -119,6 +119,8 @@
   font-family: "Playfair Display", serif;
   font-size: clamp(2rem, 3.6vw, 3.6rem);
   line-height: 1.02;
+  display: flex;
+  justify-content: end;
   letter-spacing: -0.04em;
   margin-bottom: 0.7rem;
   color: rgba(255, 255, 255, 0.96);
@@ -288,7 +290,7 @@
 .genre-title-wrap {
   position: relative;
   display: inline-flex;
-  z-index: 3;
+  z-index: 1;
   align-items: center;
   justify-content: center;
   width: fit-content;
@@ -314,6 +316,7 @@
   letter-spacing: -0.05em;
   color: rgba(255, 255, 255, 0.96);
   margin-bottom: 0.45rem;
+  z-index: 3;
 }
 
 .genre-word p {

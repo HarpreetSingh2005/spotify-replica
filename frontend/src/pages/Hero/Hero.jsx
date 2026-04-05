@@ -487,7 +487,7 @@ const Hero = () => {
             <span>MUSIC</span>
           </button>
           <div className="nav-links">
-            <a href="#explore">Explore</a>
+            {/* <a href="#explore">Explore</a> */}
             <a href="#genres">Genres</a>
             <a href="#about">About</a>
             <a
@@ -530,7 +530,7 @@ const Hero = () => {
         </div>
       </section>
 
-      <section className="experience-wrapper" ref={sectionRef}>
+      <section className="experience-wrapper" ref={sectionRef} id="about">
         <div className="exp-transition" id="explore">
           <p className="exp-transition-line">Built to be more than playback.</p>
         </div>
@@ -560,7 +560,7 @@ const Hero = () => {
 
         <div className="exp-big-statement">
           <h2 className="exp-big-line">
-            Music should match your state —<br />
+            Music should match your state<br />
             not interrupt it.
           </h2>
         </div>
@@ -617,6 +617,10 @@ const Hero = () => {
         <p>
           Background audio tracks are sourced from <strong>Pixabay</strong>. 
           Imagery and assets are inspired by <strong>Colour Splash</strong> constraints.
+          <br />
+          All rights reserved to the respective owners.
+          <br />
+          This is just a project and not a real music streaming platform.
         </p>
       </footer>
     </>
