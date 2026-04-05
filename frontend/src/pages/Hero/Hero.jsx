@@ -276,7 +276,6 @@ const Hero = () => {
   const unlockAudio = () => {
     setAudioUnlocked(true);
     setIsSoundOn(true);
-    console.log("Audio Unlocked");
     // Start ambient background music
     if (!bgMusicRef.current) {
       // TODO: ADD YOUR MAIN BACKGROUND MUSIC HERE!
@@ -286,7 +285,7 @@ const Hero = () => {
       bgMusic.volume = 0.4;
       bgMusicRef.current = bgMusic;
     }
-    bgMusicRef.current.play().catch((err) => console.log("Audio play failed:", err));
+    bgMusicRef.current.play().catch((err) => console.log("Audio play failed:"));
   };
 
   const toggleGlobalSound = () => {

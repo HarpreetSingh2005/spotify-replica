@@ -9,7 +9,6 @@ export const getAllMusic = async (page = 1, limit = 10) => {
 //GET all albums
 export const getAllAlbums = async (page = 1, limit = 10) => {
   const response = await api.get(`/music/album?page=${page}&limit=${limit}`);
-  console.log(response.data.data);
 
   return response.data.data;
 };
@@ -23,11 +22,9 @@ export const getAlbumById = async (id) => {
 
 //SEARCH music
 export const searchMusic = async (query, page = 1, limit = 10) => {
-  console.log("SEARCH MUSIC QUERY");
   const response = await api.get(
     `/music/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`,
   );
-  console.log(response.data);
   return response.data.data;
 };
 
