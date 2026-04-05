@@ -61,6 +61,7 @@ const PlayerBar = () => {
             value={currentTime}
             onChange={(e) => seek(Number(e.target.value))}
             className="progress-slider"
+            style={{ "--progress": `${duration ? (currentTime / duration) * 100 : 0}%` }}
           />
 
           <span>{formatTime(duration)}</span>
@@ -78,6 +79,7 @@ const PlayerBar = () => {
           value={volume}
           onChange={(e) => changeVolume(Number(e.target.value))}
           className="volume-slider"
+          style={{ "--vol": `${volume * 100}%` }}
         />
       </div>
     </div>

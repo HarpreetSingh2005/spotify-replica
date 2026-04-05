@@ -28,7 +28,6 @@ export const useInfiniteScroll = (fetchFunction, dependencies = []) => {
       setError("");
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 600)); // Simulated artificial delay to show loader
         const responseData = await fetchFunction(currentPage);
         
         if (currentPage === 1) {
