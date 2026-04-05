@@ -44,6 +44,12 @@ export const PlayerProvider = ({ children }) => {
     }
   };
 
+  //Pause
+  const pauseSong = () => {
+    audioRef.current.pause();
+    setIsPlaying(false);
+  };
+
   //Next
   const playNext = () => {
     if (queue.length === 0) return;
@@ -103,6 +109,7 @@ export const PlayerProvider = ({ children }) => {
         queue,
 
         playSong,
+        pauseSong,
         togglePlay,
         playNext,
         playPrev,

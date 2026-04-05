@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import usePlayer from "../../hooks/usePlayer";
 
 import "./HeroExperience.css";
 import "./Hero.css";
@@ -79,6 +80,13 @@ const genres = [
 ];
 
 const Hero = () => {
+  const { pauseSong } = usePlayer();
+
+  // Stop the global player to prevent clashing with Hero ambient sounds
+  useEffect(() => {
+    if (pauseSong) pauseSong();
+  }, [pauseSong]);
+
   const [introDone, setIntroDone] = useState(false);
   const [activePlayer, setActivePlayer] = useState(0); // 0 = A, 1 = B
   const [videoAIndex, setVideoAIndex] = useState(0);
