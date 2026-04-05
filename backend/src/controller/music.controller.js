@@ -103,9 +103,23 @@ async function createAlbum(req, res) {
 
 async function searchMusic(req, res) {
   try {
-    const { q = "", page = 1, limit = 20 } = req.query;
+    const { q = "" } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    
+    if (page > 1) {
+      if (!req.cookies.token) {
+        return res.status(401).json({ success: false, action: "REQUIRE_LOGIN", message: "Login required to view more." });
+      }
+      try {
+        jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+      } catch (err) {
+        return res.status(401).json({ success: false, action: "REQUIRE_LOGIN", message: "Invalid session." });
+      }
+    }
+
     console.log("Searching music...");
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = (page - 1) * limit;
 
     const musics = await musicModel
       .find({
@@ -115,7 +129,7 @@ async function searchMusic(req, res) {
         } /* q is the search query and i for case insensitive */,
       })
       .populate("artist", "username")
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1, _id: -1 })
       .skip(skip)
       .limit(Number(limit));
 
@@ -146,15 +160,26 @@ async function searchMusic(req, res) {
 
 async function getAllMusics(req, res) {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
+  const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+
+  if (page > 1) {
+    if (!req.cookies.token) {
+      return res.status(401).json({ success: false, action: "REQUIRE_LOGIN", message: "Login required to view more." });
+    }
+    try {
+      jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ success: false, action: "REQUIRE_LOGIN", message: "Invalid session." });
+    }
+  }
 
   const musics = await musicModel
     .find()
     .skip(skip)
     .limit(limit)
-    .sort({ createdAt: -1 });
-  // .populate("artist", "username email");
+    .sort({ createdAt: -1, _id: -1 })
+  .populate("artist", "username email");
   //we limit to bring only 1 song, as it takes too much space if we bring all songs at once
 
   const total = await musicModel.countDocuments();
@@ -172,15 +197,26 @@ async function getAllMusics(req, res) {
 
 async function getAllAlbum(req, res) {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
+  const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+
+  if (page > 1) {
+    if (!req.cookies.token) {
+      return res.status(401).json({ success: false, action: "REQUIRE_LOGIN", message: "Login required to view more." });
+    }
+    try {
+      jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ success: false, action: "REQUIRE_LOGIN", message: "Invalid session." });
+    }
+  }
 
   const albums = await albumModel
     .find()
     .skip(skip)
     .limit(limit)
     .populate("artist", "username email")
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1, _id: -1 });
 
   const total = await albumModel.countDocuments();
   //dont want to get musics in response as it would take too much space
@@ -198,9 +234,22 @@ async function getAllAlbum(req, res) {
 
 async function searchAlbums(req, res) {
   try {
-    const { q = "", page = 1, limit = 20 } = req.query;
+    const { q = "" } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
 
-    const skip = (Number(page) - 1) * Number(limit);
+    if (page > 1) {
+      if (!req.cookies.token) {
+        return res.status(401).json({ success: false, action: "REQUIRE_LOGIN", message: "Login required to view more." });
+      }
+      try {
+        jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+      } catch (err) {
+        return res.status(401).json({ success: false, action: "REQUIRE_LOGIN", message: "Invalid session." });
+      }
+    }
+
+    const skip = (page - 1) * limit;
 
     const albums = await albumModel
       .find({
@@ -208,7 +257,7 @@ async function searchAlbums(req, res) {
       })
       .populate("artist", "username")
       .populate("musics")
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1, _id: -1 })
       .skip(skip)
       .limit(Number(limit));
 

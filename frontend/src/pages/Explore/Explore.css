@@ -8,27 +8,26 @@
 }
 
 .explore-bg-dynamic {
-  position: absolute;
+  position: fixed;
   inset: 0; /*Shorthand for top, right, bottom, left = 0*/
   background-size: cover;
   background-position: center;
-  /* filter: blur(100px) saturate(140%); */
+  filter: blur(0px) saturate(1.8) brightness(0.6);
   transform: scale(1.5);
-  opacity: 0.5;
+  /* opacity: 0.5; */
   transition:
-    background-image 0.8s ease,
-    opacity 0.6s ease;
+    background-image 2.5s ease-in-out;
   z-index: 0;
 }
 
 .explore-bg-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(8, 8, 12, 0.75),
+    rgba(8, 8, 12, 0.5),
     rgba(8, 8, 12, 0.9),
-    rgba(8, 8, 12, 1)
+    rgba(8, 8, 12, 0.5)
   );
   z-index: 1;
 }
@@ -64,7 +63,7 @@
 
 .songs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 28px;
 }
 
@@ -84,3 +83,7 @@
 .explore-message.error {
   color: #ff6b6b;
 }
+
+.explore-loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; width: 100%; } 
+.explore-custom-spinner { width: 40px; height: 40px; border: 4px solid rgba(255, 255, 255, 0.1); border-top-color: #fff; border-radius: 50%; animation: explore-spin 1s linear infinite; margin-bottom: 15px; } 
+@keyframes explore-spin { to { transform: rotate(360deg); } }

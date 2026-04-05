@@ -1,12 +1,19 @@
 import usePlayer from "../../hooks/usePlayer";
+import { useAuth } from "../../context/AuthContext";
 import "./SongCard.css";
 
 const SongCard = ({ song, songsList }) => {
   const { currentSong, isPlaying, playSong, togglePlay } = usePlayer();
+  const { user, openAuthModal } = useAuth();
 
   const isCurrentSong = currentSong?._id === song._id;
 
   const handleSongClick = () => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+
     if (isCurrentSong) {
       togglePlay();
     } else {

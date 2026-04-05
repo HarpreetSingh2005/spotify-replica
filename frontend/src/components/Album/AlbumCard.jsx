@@ -1,9 +1,21 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./AlbumCard.css";
 
 const AlbumCard = ({ album }) => {
+  const navigate = useNavigate();
+  const { user, openAuthModal } = useAuth();
+
+  const handleAlbumClick = () => {
+    if (!user) {
+      openAuthModal();
+    } else {
+      navigate(`/album/${album._id}`);
+    }
+  };
+
   return (
-    <Link to={`/album/${album._id}`} className="album-card">
+    <div onClick={handleAlbumClick} className="album-card" style={{ cursor: "pointer" }}>
       <div className="album-card-image-wrapper">
         <img
           src={album.imageUri}
@@ -18,7 +30,7 @@ const AlbumCard = ({ album }) => {
         <p>{album.artist?.username || "Unknown Artist"}</p>
         <span>{album.songs?.length || 0} tracks</span>
       </div>
-    </Link>
+    </div>
   );
 };
 

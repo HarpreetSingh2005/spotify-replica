@@ -1,14 +1,14 @@
 import api from "../lib/axios";
 
 //GET all music
-export const getAllMusic = async (page = 1, limit = 20) => {
-  const response = await api.get(`/music?_page=${page}&_limit=${limit}`);
+export const getAllMusic = async (page = 1, limit = 10) => {
+  const response = await api.get(`/music?page=${page}&limit=${limit}`);
   return response.data.data;
 };
 
 //GET all albums
-export const getAllAlbums = async (page = 1, limit = 20) => {
-  const response = await api.get(`/music/album?_page=${page}&_limit=${limit}`);
+export const getAllAlbums = async (page = 1, limit = 10) => {
+  const response = await api.get(`/music/album?page=${page}&limit=${limit}`);
   console.log(response.data.data);
 
   return response.data.data;
@@ -22,19 +22,19 @@ export const getAlbumById = async (id) => {
 };
 
 //SEARCH music
-export const searchMusic = async (query, page = 1, limit = 20) => {
+export const searchMusic = async (query, page = 1, limit = 10) => {
   console.log("SEARCH MUSIC QUERY");
   const response = await api.get(
     `/music/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`,
   );
   console.log(response.data);
-  return response.data;
+  return response.data.data;
 };
 
 //SEARCH album
-export const searchAlbum = async (query, page = 1, limit = 20) => {
+export const searchAlbum = async (query, page = 1, limit = 10) => {
   const response = await api.get(
     `/music/album/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`,
   );
-  return response.data;
+  return response.data.data;
 };

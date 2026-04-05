@@ -17,6 +17,7 @@ import classicalPreview from "../../assets/genres/classical.mp3";
 import edmPreview from "../../assets/genres/edm.mp3";
 import lofiPreview from "../../assets/genres/lofi.mp3";
 import indiePreview from "../../assets/genres/indie.mp3";
+import main from "../../assets/genres/main.mp3";
 import { Link } from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -79,11 +80,17 @@ const genres = [
 
 const Hero = () => {
   const [introDone, setIntroDone] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [nextIndex, setNextIndex] = useState(1);
-  const [showNext, setShowNext] = useState(false);
-  const [nextReady, setNextReady] = useState(false);
+  const [activePlayer, setActivePlayer] = useState(0); // 0 = A, 1 = B
+  const [videoAIndex, setVideoAIndex] = useState(0);
+  const [videoBIndex, setVideoBIndex] = useState(1);
   const [audioUnlocked, setAudioUnlocked] = useState(false);
+  const [isSoundOn, setIsSoundOn] = useState(true);
+  const isSoundOnRef = useRef(isSoundOn);
+  
+  // Sync state to ref for GSAP closures
+  useEffect(() => {
+    isSoundOnRef.current = isSoundOn;
+  }, [isSoundOn]);
 
   const overlayRef = useRef(null);
   const svgRef = useRef(null);
@@ -99,6 +106,14 @@ const Hero = () => {
   const hoverTimeoutRef = useRef(null);
   const genreRefs = useRef([]);
   const bgMusicRef = useRef(null);
+
+  // Ensure page starts at the absolute top on every refresh
+  useEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+  }, []);
 
   // Intro Mask
   useEffect(() => {
@@ -141,40 +156,26 @@ const Hero = () => {
       document.body.style.overflow = "auto";
     };
   }, []);
-  // Video switching logic (clean)
+  // Video switching logic (smooth ping-pong fade)
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!nextReady) return;
-      setShowNext(true);
-      setTimeout(() => {
-        setActiveIndex(nextIndex);
-        setNextIndex((prev) => (prev + 1) % videos.length);
-        setShowNext(false);
-        setNextReady(false);
-      }, 950);
-    }, 5000);
+      setActivePlayer((p) => (p === 0 ? 1 : 0));
+    }, 4500);
     return () => clearInterval(interval);
-  }, [nextReady, nextIndex]);
+  }, []);
 
   useEffect(() => {
-    if (activeVideoRef.current) {
-      activeVideoRef.current.src = videos[activeIndex];
-      activeVideoRef.current.load();
-    }
-    if (nextVideoRef.current) {
-      nextVideoRef.current.src = videos[nextIndex];
-      nextVideoRef.current.load();
-    }
-  }, [activeIndex, nextIndex]);
+    // PRE-LOAD NEXT VIDEO in background after fade animation completes
+    const timeout = setTimeout(() => {
+      if (activePlayer === 0) {
+        setVideoBIndex((prev) => (videoAIndex + 1) % videos.length);
+      } else {
+        setVideoAIndex((prev) => (videoBIndex + 1) % videos.length);
+      }
+    }, 1200);
 
-  // Restart active video from beginning
-  useEffect(() => {
-    const vid = activeVideoRef.current;
-    if (vid) {
-      vid.currentTime = 0;
-      vid.play().catch(() => {});
-    }
-  }, [activeIndex]);
+    return () => clearTimeout(timeout);
+  }, [activePlayer, videoAIndex, videoBIndex]);
 
   // GSAP Scroll Animations
   useEffect(() => {
@@ -242,6 +243,22 @@ const Hero = () => {
           },
         });
       }
+
+      // Audio ScrollTrigger
+      ScrollTrigger.create({
+        trigger: ".music-horizontal-section",
+        start: "top center",
+        onEnter: () => {
+          if (bgMusicRef.current) {
+            bgMusicRef.current.pause();
+          }
+        },
+        onLeaveBack: () => {
+          if (bgMusicRef.current && isSoundOnRef.current) {
+            bgMusicRef.current.play().catch(() => {});
+          }
+        }
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -250,20 +267,34 @@ const Hero = () => {
   // Start Background Music when user taps
   const unlockAudio = () => {
     setAudioUnlocked(true);
+    setIsSoundOn(true);
     console.log("Audio Unlocked");
-    // Start ambient background music (replace with your own soft track)
+    // Start ambient background music
     if (!bgMusicRef.current) {
-      const bgMusic = new Audio(chillPreview); // ← Put your ambient track here
-      bgMusic.volume = 0.25;
+      // TODO: ADD YOUR MAIN BACKGROUND MUSIC HERE!
+      // Replace 'chillPreview' with your imported main audio file (e.g. 'mainThemeAudio')
+      const bgMusic = new Audio(main); 
       bgMusic.loop = true;
-      bgMusic.play().catch(() => {});
+      bgMusic.volume = 0.4;
       bgMusicRef.current = bgMusic;
     }
-
-    // Hide tap overlay smoothly
-    const tapOverlay = document.querySelector(".tap-to-unlock");
-    if (tapOverlay) tapOverlay.classList.add("hidden");
+    bgMusicRef.current.play().catch((err) => console.log("Audio play failed:", err));
   };
+
+  const toggleGlobalSound = () => {
+    if (!audioUnlocked) {
+      unlockAudio();
+      return;
+    }
+    if (isSoundOn) {
+      if (bgMusicRef.current) bgMusicRef.current.pause();
+      setIsSoundOn(false);
+    } else {
+      if (bgMusicRef.current) bgMusicRef.current.play().catch(() => {});
+      setIsSoundOn(true);
+    }
+  };
+
   // Genre Handlers (Improved Magnetic Bubble)
   const handleGenreEnter = (genre) => {
     if (!audioUnlocked) return;
@@ -379,28 +410,26 @@ const Hero = () => {
         <div className={`hero-media ${introDone ? "framed" : ""}`}>
           <video
             ref={activeVideoRef}
-            className={`bg-video ${showNext ? "fade-out" : ""}`}
+            className={`bg-video`}
+            style={{ opacity: activePlayer === 0 ? 1 : 0 }}
             autoPlay
             muted
             loop
             playsInline
             preload="auto"
-          >
-            <source src={videos[activeIndex]} type="video/mp4" />
-          </video>
-
+            src={videos[videoAIndex]}
+          />
           <video
             ref={nextVideoRef}
-            className={`bg-video next-layer ${showNext ? "fade-in" : ""}`}
+            className={`bg-video`}
+            style={{ opacity: activePlayer === 1 ? 1 : 0 }}
             autoPlay
             muted
             loop
             playsInline
             preload="auto"
-            onCanPlayThrough={() => setNextReady(true)}
-          >
-            <source src={videos[nextIndex]} type="video/mp4" />
-          </video>
+            src={videos[videoBIndex]}
+          />
 
           <div className={`hero-overlay ${introDone ? "active" : ""}`}></div>
           <div className={`hero-radial ${introDone ? "active" : ""}`}></div>
@@ -408,14 +437,17 @@ const Hero = () => {
             className={`hero-bottom-gradient ${introDone ? "active" : ""}`}
           ></div>
 
-          {/* Tap to Unlock */}
-          {!audioUnlocked && introDone && (
-            <div className="tap-to-unlock" onClick={unlockAudio}>
+        </div>
+
+        {/* Full Screen Unlock Overlay */}
+        {!audioUnlocked && introDone && (
+          <button className="fullscreen-unlock-overlay" onClick={unlockAudio}>
+            <div className="unlock-content">
               <p>Tap to unlock sound</p>
               <span>Click anywhere to start the immersive experience</span>
             </div>
-          )}
-        </div>
+          </button>
+        )}
 
         {!introDone && (
           <div className="intro-overlay" ref={overlayRef}>
@@ -464,8 +496,8 @@ const Hero = () => {
             >
               Create Music
             </a>
-            <button className="sound-btn" onClick={unlockAudio}>
-              Sound On
+            <button className={`sound-btn ${isSoundOn && audioUnlocked ? "sound-active" : ""}`} onClick={toggleGlobalSound}>
+              {isSoundOn && audioUnlocked ? "Sound On" : "Sound Off"}
             </button>
           </div>
         </nav>
@@ -580,6 +612,13 @@ const Hero = () => {
           </div>
         </section>
       </section>
+
+      <footer className="hero-attribution">
+        <p>
+          Background audio tracks are sourced from <strong>Pixabay</strong>. 
+          Imagery and assets are inspired by <strong>Colour Splash</strong> constraints.
+        </p>
+      </footer>
     </>
   );
 };

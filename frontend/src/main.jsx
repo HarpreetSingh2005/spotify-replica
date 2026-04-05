@@ -2,12 +2,15 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import { PlayerProvider } from "./context/PlayerContext.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <PlayerProvider>
-      <App />
-    </PlayerProvider>
+    <AuthProvider>
+      <PlayerProvider>
+        <App />
+      </PlayerProvider>
+    </AuthProvider>
   </StrictMode>,
 );
