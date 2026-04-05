@@ -7,7 +7,9 @@ const SearchBar = ({ value, onChange, placeholder = "Search music..." }) => {
       <input
         type="text"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
         placeholder={placeholder}
       />
     </div>

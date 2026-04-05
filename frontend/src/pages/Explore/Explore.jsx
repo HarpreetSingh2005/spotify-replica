@@ -2,14 +2,25 @@ import { useEffect, useState } from "react";
 import SongCard from "../../components/Song/SongCard";
 import AlbumCard from "../../components/Album/AlbumCard";
 import TabSwitcher from "../../components/UI/TabSwitcher";
+
 import usePlayer from "../../hooks/usePlayer";
-import { getAllMusic, getAllAlbums } from "../../services/musicServices";
+import useDebounce from "../../hooks/useDebounce";
+
+import {
+  getAllMusic,
+  getAllAlbums,
+  searchMusic,
+  searchAlbum,
+} from "../../services/musicServices";
 import "./Explore.css";
+import SearchBar from "../../components/UI/SearchBar";
 
 const Explore = () => {
   const { currentSong } = usePlayer();
 
   const [activeTab, setActiveTab] = useState("music");
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 500);
 
   const [songs, setSongs] = useState([]);
   const [albums, setAlbums] = useState([]);
@@ -20,13 +31,17 @@ const Explore = () => {
   const [errorSongs, setErrorSongs] = useState("");
   const [errorAlbums, setErrorAlbums] = useState("");
 
+  //Music GET/SEARCH
   useEffect(() => {
     const fetchSongs = async () => {
       try {
         setLoadingSongs(true);
         setErrorSongs("");
+        console.log("Searching music for:", debouncedSearch);
+        const res = debouncedSearch
+          ? await searchMusic(debouncedSearch, 1, 20)
+          : await getAllMusic(1, 20);
 
-        const res = await getAllMusic(1, 10);
         setSongs(res || []);
       } catch (error) {
         console.error("Error fetching songs:", error);
@@ -36,15 +51,22 @@ const Explore = () => {
       }
     };
 
-    fetchSongs();
-  }, []);
+    if (activeTab === "music") {
+      fetchSongs();
+    }
+  }, [debouncedSearch, activeTab]);
+
+  //ALBUMS GET/SEARHCH
   useEffect(() => {
     const fetchAlbums = async () => {
       try {
         setLoadingAlbums(true);
         setErrorAlbums("");
 
-        const res = await getAllAlbums(1, 20);
+        const res = debouncedSearch
+          ? await searchAlbum(debouncedSearch, 1, 20)
+          : await getAllAlbums(1, 20);
+
         setAlbums(res || []);
       } catch (error) {
         console.error("Error fetching albums:", error);
@@ -54,8 +76,10 @@ const Explore = () => {
       }
     };
 
-    fetchAlbums();
-  }, []);
+    if (activeTab === "albums") {
+      fetchAlbums();
+    }
+  }, [debouncedSearch, activeTab]);
 
   return (
     <div className="explore-page">
@@ -79,6 +103,13 @@ const Explore = () => {
 
         <TabSwitcher activeTab={activeTab} setActiveTab={setActiveTab} />
 
+        <SearchBar
+          value={searchTerm}
+          onChange={setSearchTerm}
+          placeholder={
+            activeTab === "music" ? "Search songs..." : "Search albums..."
+          }
+        />
         <h2 className="explore-section-title">
           {activeTab === "music" ? "Trending Right Now" : "Featured Albums"}
         </h2>
@@ -94,9 +125,13 @@ const Explore = () => {
 
             {!loadingSongs && !errorSongs && (
               <div className="songs-grid">
-                {songs.map((song) => (
-                  <SongCard key={song._id} song={song} songsList={songs} />
-                ))}
+                {songs.length > 0 ? (
+                  songs.map((song) => (
+                    <SongCard key={song._id} song={song} songsList={songs} />
+                  ))
+                ) : (
+                  <p className="explore-message">No songs found.</p>
+                )}
               </div>
             )}
           </>
@@ -114,9 +149,13 @@ const Explore = () => {
 
             {!loadingAlbums && !errorAlbums && (
               <div className="songs-grid">
-                {albums.map((album) => (
-                  <AlbumCard key={album._id} album={album} />
-                ))}
+                {albums.length > 0 ? (
+                  albums.map((album) => (
+                    <AlbumCard key={album._id} album={album} />
+                  ))
+                ) : (
+                  <p className="explore-message">No albums found.</p>
+                )}
               </div>
             )}
           </>

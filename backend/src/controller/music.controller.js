@@ -101,15 +101,52 @@ async function createAlbum(req, res) {
   }
 }
 
-async function getMusic(req, res) {
-  const musicId = req.params.musicId;
-  const music = await musicModel.findById(musicId);
-  res.status(200).json({ success: true, data: music });
+async function searchMusic(req, res) {
+  try {
+    const { q = "", page = 1, limit = 20 } = req.query;
+    console.log("Searching music...");
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const musics = await musicModel
+      .find({
+        title: {
+          $regex: q,
+          $options: "i",
+        } /* q is the search query and i for case insensitive */,
+      })
+      .populate("artist", "username")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await musicModel.countDocuments({
+      title: {
+        $regex: q,
+        $options: "i",
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: musics,
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        hasMore: skip + musics.length < total,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to search music" });
+  }
 }
 
 async function getAllMusics(req, res) {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  const limit = parseInt(req.query.limit) || 20;
   const skip = (page - 1) * limit;
 
   const musics = await musicModel
@@ -119,12 +156,23 @@ async function getAllMusics(req, res) {
     .sort({ createdAt: -1 });
   // .populate("artist", "username email");
   //we limit to bring only 1 song, as it takes too much space if we bring all songs at once
-  res.status(200).json({ success: true, data: musics });
+
+  const total = await musicModel.countDocuments();
+  res.status(200).json({
+    success: true,
+    data: musics,
+    pagination: {
+      page: page,
+      limit: limit,
+      total: musics.length,
+      hasMore: skip + musics.length < total,
+    },
+  });
 }
 
 async function getAllAlbum(req, res) {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  const limit = parseInt(req.query.limit) || 20;
   const skip = (page - 1) * limit;
 
   const albums = await albumModel
@@ -133,8 +181,58 @@ async function getAllAlbum(req, res) {
     .limit(limit)
     .populate("artist", "username email")
     .sort({ createdAt: -1 });
+
+  const total = await albumModel.countDocuments();
   //dont want to get musics in response as it would take too much space
-  res.status(200).json({ success: true, data: albums });
+  res.status(200).json({
+    success: true,
+    data: albums,
+    pagination: {
+      page: page,
+      limit: limit,
+      total: albums.length,
+      hasMore: skip + albums.length < total,
+    },
+  });
+}
+
+async function searchAlbums(req, res) {
+  try {
+    const { q = "", page = 1, limit = 20 } = req.query;
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const albums = await albumModel
+      .find({
+        title: { $regex: q, $options: "i" },
+      })
+      .populate("artist", "username")
+      .populate("musics")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await albumModel.countDocuments({
+      title: { $regex: q, $options: "i" },
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: albums,
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        hasMore: skip + albums.length < total,
+      },
+    });
+  } catch (error) {
+    console.error("Search albums error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to search albums",
+    });
+  }
 }
 
 async function getAlbumById(req, res) {
@@ -149,8 +247,9 @@ async function getAlbumById(req, res) {
 module.exports = {
   create,
   createAlbum,
-  getMusic,
+  searchMusic,
   getAllMusics,
   getAllAlbum,
+  searchAlbums,
   getAlbumById,
 };

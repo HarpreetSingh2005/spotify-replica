@@ -27,20 +27,26 @@ router.post(
   musicController.createAlbum,
 );
 
-/* Get album by id: /api/music/album/:albumId */
-router.get(
-  "/album/:albumId",
-  // authMiddleware.authUser,
-  musicController.getAlbumById,
-);
-
 /* Get all albums: /api/music/album */
 router.get("/album", /*authMiddleware.authUser ,*/ musicController.getAllAlbum);
 
 /* Get all musics: /api/music */
 router.get("/", /*authMiddleware.authUser,*/ musicController.getAllMusics);
 
-/* Get music by id: /api/music/:musicId */
-router.get("/:musicId", authMiddleware.authUser, musicController.getMusic);
+/* Search music: /api/music/search?q= */
+router.get("/search", /*authMiddleware.authUser,*/ musicController.searchMusic);
+
+/* Search album: /api/music/album/search?q= */
+router.get(
+  "/album/search",
+  /*authMiddleware.authUser,*/ musicController.searchAlbums,
+);
+
+/* Get album by id: /api/music/album/:albumId */
+router.get(
+  "/album/:albumId",
+  // authMiddleware.authUser,
+  musicController.getAlbumById,
+);
 
 module.exports = router;
