@@ -39,7 +39,7 @@ export const useInfiniteScroll = (fetchFunction, dependencies = []) => {
         setHasMore(responseData && responseData.length === 10);
         setPage(currentPage);
       } catch (err) {
-        console.error("Infinite scroll error:", err);
+        console.error("Infinite scroll error");
         
         if (err.response?.status === 401 && err.response?.data?.action === "REQUIRE_LOGIN") {
           setHasMore(false); // Stop trying to fetch
