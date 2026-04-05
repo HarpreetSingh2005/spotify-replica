@@ -8,7 +8,7 @@ require("dotenv").config();
 const app = express();
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.CLIENT_URL,
     credentials: true,
   }), // to allow cross-origin requests from thr url and allow it to send cookies
 );
