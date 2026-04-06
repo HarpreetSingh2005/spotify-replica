@@ -88,6 +88,7 @@ const Hero = () => {
   }, [pauseSong]);
 
   const [introDone, setIntroDone] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const [activePlayer, setActivePlayer] = useState(0); // 0 = A, 1 = B
   const [videoAIndex, setVideoAIndex] = useState(0);
   const [videoBIndex, setVideoBIndex] = useState(1);
@@ -123,9 +124,23 @@ const Hero = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Check if video is already loaded
+  useEffect(() => {
+    if (activeVideoRef.current && activeVideoRef.current.readyState >= 3) {
+      setVideoLoaded(true);
+    }
+  }, []);
+
   // Intro Mask
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    
+    if (textRef.current && !videoLoaded) {
+      gsap.set(textRef.current, { opacity: 0, filter: "blur(10px)" });
+    }
+
+    if (!videoLoaded) return;
+
     const tl = gsap.timeline({
       onComplete: () => {
         setIntroDone(true);
@@ -163,7 +178,7 @@ const Hero = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, []);
+  }, [videoLoaded]);
   // Video switching logic (smooth ping-pong fade)
   useEffect(() => {
     const interval = setInterval(() => {
@@ -425,6 +440,8 @@ const Hero = () => {
             playsInline
             preload="auto"
             src={videos[videoAIndex]}
+            onCanPlay={() => setVideoLoaded(true)}
+            onLoadedData={() => setVideoLoaded(true)}
           />
           <video
             ref={nextVideoRef}
